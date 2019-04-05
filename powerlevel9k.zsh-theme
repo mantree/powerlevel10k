@@ -2001,14 +2001,20 @@ prompt_kubecontext() {
 
     local k8s_final_text=""
 
-    if [[ "$cur_ctx" == "$cur_namespace" ]]; then
-      # No reason to print out the same identificator twice
+    if [[ "$cur_ctx" == "$cur_namespace" || "$cur_namespace" == "default" ]]; then
+      # No reason to print out the same identificator twice or if it's default print it at all
       k8s_final_text="$cur_ctx"
     else
       k8s_final_text="$cur_ctx/$cur_namespace"
     fi
+    
+    local red=""
 
-    "$1_prompt_segment" "$0" "$2" "magenta" "white" "KUBERNETES_ICON" 0 '' "${k8s_final_text//\%/%%}"
+    if [[ "$k8s_final_text" =~ "prod" ]]; then
+      red="%B%F{red}"
+    fi
+
+    "$1_prompt_segment" "$0" "$2" "magenta" "white" "KUBERNETES_ICON" 0 '' "${red}${k8s_final_text//\%/%%}"
   fi
 }
 
